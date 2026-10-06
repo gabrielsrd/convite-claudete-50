@@ -75,10 +75,37 @@
     color: var(--on-field-soft);
     font-weight: 600;
   }
-  .flower-wrap { position: relative; width: min(21rem, 86vw); aspect-ratio: 1; max-width: 100%; }
+  .flower-wrap {
+    position: relative; width: min(21rem, 86vw); aspect-ratio: 1; max-width: 100%;
+    transform: perspective(900px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg)) rotate(var(--sway, 0deg));
+    will-change: transform;
+  }
   .flower-wrap svg { width: 100%; height: 100%; display: block; overflow: visible; }
   .petals { transform-origin: 0 0; animation: turn 140s linear infinite; }
   @keyframes turn { to { transform: rotate(360deg); } }
+
+  /* Desabrochar: pétalas abrem do miolo para fora, sementes surgem em espiral */
+  .bloom .petal { transform-origin: 0 0; animation: petal-open 0.9s cubic-bezier(.2,.9,.25,1.15) backwards; animation-delay: var(--d); }
+  @keyframes petal-open { from { transform: scale(0.08) rotate(-35deg); opacity: 0; } }
+  .bloom .core { transform-origin: 0 0; animation: core-in 0.7s cubic-bezier(.2,.9,.3,1.2) backwards; }
+  @keyframes core-in { from { transform: scale(0); } }
+  .bloom .seed { transform-box: fill-box; transform-origin: center; animation: seed-in 0.45s ease-out backwards; animation-delay: var(--d); }
+  @keyframes seed-in { from { transform: scale(0); opacity: 0; } }
+  .intro .fifty { animation: rise 0.8s ease-out 1.1s backwards; }
+  .intro .eyebrow { animation: rise 0.8s ease-out 0.1s backwards; }
+  .intro .name { animation: write 1.6s cubic-bezier(.45,.05,.35,1) 0.8s backwards; }
+  .intro .lede { animation: rise 0.9s ease-out 1.8s backwards; }
+  @keyframes rise { from { opacity: 0; transform: translateY(12px); } }
+  @keyframes write { from { clip-path: inset(-20% 100% -20% 0); } to { clip-path: inset(-20% -5% -20% 0); } }
+
+  /* Pétalas caindo ao fundo */
+  #petal-rain, #petal-burst { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+  #petal-burst { z-index: 5; }
+  main { position: relative; z-index: 1; }
+
+  /* Cartões entram suavemente ao rolar */
+  .reveal { opacity: 0; transform: translateY(28px); transition: opacity .8s ease-out, transform .8s cubic-bezier(.2,.8,.2,1); }
+  .reveal.shown { opacity: 1; transform: none; }
   .fifty {
     position: absolute; inset: 0;
     display: grid; place-items: center;
@@ -178,12 +205,19 @@
     cursor: pointer;
     transition: background .15s, color .15s, transform .15s;
   }
-  .btn:hover { background: var(--ink); color: var(--paper); }
+  .btn:hover { background: var(--ink); color: var(--paper); transform: translateY(-2px); }
+  .btn:active { transform: translateY(0) scale(.97); }
   .btn:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible, .choice input:focus-visible + span {
     outline: 3px solid var(--petal-deep);
     outline-offset: 2px;
   }
-  .btn-primary { background: var(--petal); border-color: var(--petal); color: var(--ink); width: 100%; padding-block: 1.05rem; font-size: 1rem; }
+  .btn-primary {
+    background: var(--petal); border-color: var(--petal); color: var(--ink); width: 100%; padding-block: 1.05rem; font-size: 1rem;
+    background-image: linear-gradient(110deg, transparent 35%, rgba(255,255,255,.45) 50%, transparent 65%);
+    background-size: 250% 100%; background-position: 120% 0; background-repeat: no-repeat;
+    animation: shine 4.5s ease-in-out 3s infinite;
+  }
+  @keyframes shine { 0%, 70% { background-position: 120% 0; } 100% { background-position: -120% 0; } }
   .btn-primary:hover { background: var(--petal-deep); border-color: var(--petal-deep); color: var(--ink); }
   .btn-primary:disabled { opacity: .6; cursor: progress; }
 
@@ -237,7 +271,10 @@
     background: #fffdf6;
     transition: background .15s, border-color .15s;
   }
-  .choice input:checked + span { background: var(--petal); border-color: var(--petal-deep); }
+  .choice input:checked + span { background: var(--petal); border-color: var(--petal-deep); animation: pop .35s cubic-bezier(.2,.9,.3,1.4); }
+  @keyframes pop { 50% { transform: scale(1.05); } }
+  .reveal-field { animation: rise .45s ease-out; }
+  .done:not([hidden]) h2, .done:not([hidden]) p { animation: rise .7s ease-out .5s backwards; }
   .error { color: var(--error); font-weight: 600; font-size: 0.92rem; }
 
   .done { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 0.6rem; }
@@ -258,15 +295,19 @@
   footer .sig { font-family: var(--font-script); font-size: 2.4rem; color: var(--on-field); line-height: 1.1; }
 
   @media (prefers-reduced-motion: reduce) {
-    .petals { animation: none; }
+    .petals, .bloom *, .intro *, .btn-primary, .choice input:checked + span, .reveal-field, .done * { animation: none !important; }
     .btn, .choice span { transition: none; }
+    .reveal { opacity: 1; transform: none; transition: none; }
+    #petal-rain, #petal-burst { display: none; }
   }
 </style>
 </head>
 <body>
+<canvas id="petal-rain" aria-hidden="true"></canvas>
+<canvas id="petal-burst" aria-hidden="true"></canvas>
 <main>
 
-  <header class="hero">
+  <header class="hero intro">
     <p class="eyebrow">Venha celebrar comigo</p>
     <div class="flower-wrap">
       <svg id="hero-flower" viewBox="0 0 200 200" role="img" aria-label="Girassol"></svg>
@@ -407,7 +448,8 @@
            `C ${-width * 0.55} ${-tip + 6}, ${-width} ${-mid}, 0 ${-base} Z`;
   }
 
-  function drawSunflower(svg, { centerR = 38, seeds = 260, hollow = 0.62 } = {}) {
+  function drawSunflower(svg, { centerR = 38, seeds = 260, hollow = 0.62, bloom = false, delay = 0 } = {}) {
+    if (bloom) svg.classList.add("bloom");
     const petals = el("g", { class: "petals" }, el("g", { transform: "translate(100 100)" }, svg));
     const g = el("g", { transform: "translate(100 100)" }, svg);
 
@@ -416,37 +458,161 @@
       { n: 34, base: centerR - 6, tip: 98, w: 9, fill: "var(--petal-deep)", off: 0 },
       { n: 21, base: centerR - 6, tip: 92, w: 11, fill: "var(--petal)", off: Math.PI / 21 },
     ];
-    for (const L of layers) {
+    layers.forEach((L, li) => {
       for (let i = 0; i < L.n; i++) {
         const a = (i / L.n) * 360 + (L.off * 180) / Math.PI + (i % 2 ? 2 : -2);
         const tip = L.tip - (i % 3) * 3;
-        el("path", {
-          d: petalPath(L.base, tip, L.w),
-          fill: L.fill,
-          transform: `rotate(${a.toFixed(2)})`,
-        }, petals);
+        const holder = el("g", { transform: `rotate(${a.toFixed(2)})` }, petals);
+        const petal = el("path", { d: petalPath(L.base, tip, L.w), fill: L.fill, class: "petal" }, holder);
+        petal.style.setProperty("--d", (delay + 0.15 + li * 0.3 + i * (0.6 / L.n)).toFixed(3) + "s");
       }
-    }
+    });
 
-    el("circle", { r: centerR + 1.5, fill: "#5a3714" }, g);
-    el("circle", { r: centerR, fill: "var(--seed)" }, g);
+    const core = el("g", { class: "core" }, g);
+    el("circle", { r: centerR + 1.5, fill: "#5a3714" }, core);
+    el("circle", { r: centerR, fill: "var(--seed)" }, core);
     const k = centerR / Math.sqrt(seeds) * 0.96;
     for (let i = 0; i < seeds; i++) {
       const r = k * Math.sqrt(i + 0.5);
       if (r < centerR * hollow) continue;
       const t = i * GOLDEN_ANGLE;
       const outer = r / centerR;
-      el("circle", {
+      const seed = el("circle", {
         cx: (r * Math.cos(t)).toFixed(2),
         cy: (r * Math.sin(t)).toFixed(2),
         r: (0.9 + outer * 0.9).toFixed(2),
         fill: outer > 0.85 ? "#8a5a1c" : (i % 2 ? "#6b4316" : "#4f3010"),
+        class: "seed",
       }, g);
+      seed.style.setProperty("--d", (delay + 0.4 + (i / seeds) * 0.9).toFixed(3) + "s");
     }
   }
 
-  drawSunflower(document.getElementById("hero-flower"));
-  drawSunflower(document.getElementById("done-flower"), { hollow: 0 });
+  const REDUCED = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  drawSunflower(document.getElementById("hero-flower"), { bloom: true });
+
+  /* ---------- Girassol segue o dedo / mouse, como segue o sol ---------- */
+  (function heliotropism() {
+    if (REDUCED) return;
+    const wrap = document.querySelector(".flower-wrap");
+    let target = null, x = 0, y = 0, lastMove = 0;
+    const aim = (cx, cy) => {
+      const r = wrap.getBoundingClientRect();
+      const dx = (cx - (r.left + r.width / 2)) / window.innerWidth;
+      const dy = (cy - (r.top + r.height / 2)) / window.innerHeight;
+      target = { x: Math.max(-1, Math.min(1, dx * 2)), y: Math.max(-1, Math.min(1, dy * 2)) };
+      lastMove = performance.now();
+    };
+    window.addEventListener("pointermove", e => aim(e.clientX, e.clientY), { passive: true });
+    window.addEventListener("touchstart", e => aim(e.touches[0].clientX, e.touches[0].clientY), { passive: true });
+    function frame(now) {
+      const idle = !target || now - lastMove > 2500;
+      const tx = idle ? Math.sin(now / 2600) * 0.35 : target.x;
+      const ty = idle ? Math.cos(now / 3400) * 0.2 : target.y;
+      x += (tx - x) * 0.05; y += (ty - y) * 0.05;
+      wrap.style.setProperty("--tilt-y", (x * 18).toFixed(2) + "deg");
+      wrap.style.setProperty("--tilt-x", (-y * 14).toFixed(2) + "deg");
+      wrap.style.setProperty("--sway", (x * 4).toFixed(2) + "deg");
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  })();
+
+  /* ---------- Pétalas caindo (e a chuva de pétalas ao confirmar) ---------- */
+  const rain = (function petalRain() {
+    const canvas = document.getElementById("petal-rain");
+    const ctx = canvas.getContext("2d");
+    const top = document.getElementById("petal-burst");
+    const ctxTop = top.getContext("2d");
+    const colors = ["#f6b80f", "#d4890a", "#f9c93a"];
+    let w = 0, h = 0, dpr = 1;
+    const drift = [], burst = [];
+    function resize() {
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      w = window.innerWidth; h = window.innerHeight;
+      for (const [c, x] of [[canvas, ctx], [top, ctxTop]]) {
+        c.width = w * dpr; c.height = h * dpr;
+        x.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+    }
+    function makeDrift(anywhere) {
+      return {
+        x: Math.random() * w, y: anywhere ? Math.random() * h : -30,
+        size: 7 + Math.random() * 7, vy: 0.35 + Math.random() * 0.5,
+        phase: Math.random() * Math.PI * 2, swing: 0.6 + Math.random() * 0.9,
+        rot: Math.random() * Math.PI * 2, vr: (Math.random() - 0.5) * 0.02,
+        flip: Math.random() * Math.PI * 2, vf: 0.02 + Math.random() * 0.03,
+        color: colors[Math.floor(Math.random() * colors.length)], alpha: 0.55 + Math.random() * 0.3,
+      };
+    }
+    function drawPetal(p, ctx) {
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot);
+      ctx.scale(1, Math.max(0.15, Math.abs(Math.cos(p.flip))));
+      ctx.globalAlpha = p.alpha;
+      ctx.fillStyle = p.color;
+      ctx.beginPath();
+      ctx.moveTo(0, -p.size);
+      ctx.bezierCurveTo(p.size * 0.55, -p.size * 0.4, p.size * 0.4, p.size * 0.7, 0, p.size);
+      ctx.bezierCurveTo(-p.size * 0.4, p.size * 0.7, -p.size * 0.55, -p.size * 0.4, 0, -p.size);
+      ctx.fill();
+      ctx.restore();
+    }
+    function frame() {
+      ctx.clearRect(0, 0, w, h);
+      for (let i = 0; i < drift.length; i++) {
+        const p = drift[i];
+        p.phase += 0.012; p.y += p.vy; p.x += Math.sin(p.phase) * p.swing * 0.5;
+        p.rot += p.vr; p.flip += p.vf;
+        if (p.y > h + 30) drift[i] = makeDrift(false);
+        drawPetal(p, ctx);
+      }
+      ctxTop.clearRect(0, 0, w, h);
+      for (let i = burst.length - 1; i >= 0; i--) {
+        const p = burst[i];
+        p.vy += 0.12; p.vx *= 0.985; p.vy *= 0.985;
+        p.x += p.vx; p.y += p.vy; p.rot += p.vr; p.flip += p.vf;
+        p.life -= 1; p.alpha = Math.min(1, p.life / 40);
+        if (p.life <= 0 || p.y > h + 40) burst.splice(i, 1); else drawPetal(p, ctxTop);
+      }
+      requestAnimationFrame(frame);
+    }
+    if (!REDUCED) {
+      resize();
+      window.addEventListener("resize", resize);
+      const count = Math.round(Math.min(18, Math.max(9, w / 60)));
+      for (let i = 0; i < count; i++) drift.push(makeDrift(true));
+      requestAnimationFrame(frame);
+    }
+    return {
+      burst(cx, cy) {
+        if (REDUCED) return;
+        for (let i = 0; i < 70; i++) {
+          const a = Math.random() * Math.PI * 2, v = 3 + Math.random() * 7;
+          burst.push({
+            x: cx, y: cy, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 4,
+            size: 7 + Math.random() * 8, rot: a, vr: (Math.random() - 0.5) * 0.3,
+            flip: Math.random() * 6, vf: 0.08 + Math.random() * 0.1,
+            color: colors[i % colors.length], alpha: 1, life: 110 + Math.random() * 60,
+          });
+        }
+      },
+    };
+  })();
+
+  /* ---------- Cartões aparecem ao rolar ---------- */
+  if (!REDUCED && "IntersectionObserver" in window) {
+    const io = new IntersectionObserver(entries => {
+      for (const e of entries) if (e.isIntersecting) { e.target.classList.add("shown"); io.unobserve(e.target); }
+    }, { threshold: 0.12 });
+    document.querySelectorAll("main > .card, .countdown, footer").forEach(node => {
+      const r = node.getBoundingClientRect();
+      if (r.top < window.innerHeight * 0.9) return; // o que já está na tela fica visível
+      node.classList.add("reveal");
+      io.observe(node);
+    });
+  }
 
   /* ---------- Links ---------- */
   const q = encodeURIComponent(ADDRESS);
@@ -468,7 +634,24 @@
     const dayMs = 86400000;
     const startOfDay = d => Date.UTC(d.getFullYear(), d.getMonth(), d.getDate());
     const days = Math.round((startOfDay(PARTY_START) - startOfDay(today)) / dayMs);
-    if (days > 1) out.innerHTML = `Faltam <strong>${days}</strong> dias`;
+    if (days > 1) {
+      out.innerHTML = `Faltam <strong>${days}</strong> dias`;
+      const strong = out.querySelector("strong");
+      if (!REDUCED && "IntersectionObserver" in window) {
+        strong.textContent = "0";
+        const io = new IntersectionObserver(([e]) => {
+          if (!e.isIntersecting) return;
+          io.disconnect();
+          const t0 = performance.now();
+          (function tick(now) {
+            const k = Math.min(1, (now - t0) / 1200);
+            strong.textContent = Math.round(days * (1 - Math.pow(1 - k, 3)));
+            if (k < 1) requestAnimationFrame(tick);
+          })(t0);
+        });
+        io.observe(out);
+      }
+    }
     else if (days === 1) out.innerHTML = `É <strong>amanhã</strong>!`;
     else if (days === 0) out.innerHTML = `É <strong>hoje</strong>! Te espero a partir das 18h.`;
     else return;
@@ -484,12 +667,20 @@
   const done = document.getElementById("rsvp-done");
 
   form.addEventListener("change", e => {
-    if (e.target.name === "presenca") pessoasField.hidden = e.target.value !== "sim";
+    if (e.target.name === "presenca") {
+      const show = e.target.value === "sim";
+      if (show && pessoasField.hidden) {
+        pessoasField.classList.remove("reveal-field");
+        void pessoasField.offsetWidth;
+        pessoasField.classList.add("reveal-field");
+      }
+      pessoasField.hidden = !show;
+    }
   });
 
   function showError(msg) { errorBox.textContent = msg; errorBox.hidden = false; }
 
-  function showDone(nome, vai) {
+  function showDone(nome, vai, celebrate) {
     const first = nome.trim().split(/\s+/)[0];
     document.getElementById("done-title").textContent = vai ? `Oba, ${first}!` : `Obrigada por avisar, ${first}`;
     document.getElementById("done-text").textContent = vai
@@ -497,6 +688,16 @@
       : "Vou sentir sua falta. Obrigada pelo carinho de responder!";
     formWrap.hidden = true;
     done.hidden = false;
+    const flower = document.getElementById("done-flower");
+    flower.replaceChildren();
+    drawSunflower(flower, { hollow: 0, bloom: celebrate, delay: 0.05 });
+    if (celebrate) {
+      done.scrollIntoView({ behavior: REDUCED ? "auto" : "smooth", block: "center" });
+      if (vai) setTimeout(() => {
+        const r = flower.getBoundingClientRect();
+        rain.burst(r.left + r.width / 2, r.top + r.height / 2);
+      }, 450);
+    }
   }
 
   form.addEventListener("submit", async e => {
@@ -523,7 +724,7 @@
       // O Apps Script não devolve cabeçalhos CORS; com no-cors o envio chega, só não lemos a resposta.
       await fetch(RSVP_ENDPOINT, { method: "POST", mode: "no-cors", body });
       try { localStorage.setItem("rsvp-claudete50", JSON.stringify({ nome, presenca })); } catch (_) {}
-      showDone(nome, presenca === "sim");
+      showDone(nome, presenca === "sim", true);
     } catch (_) {
       showError("Não conseguimos enviar. Confira sua internet e tente de novo.");
     } finally {
