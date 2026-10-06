@@ -3,7 +3,7 @@
  * na aba "Confirmações" da planilha a que este script está ligado.
  */
 const SHEET_NAME = 'Confirmações';
-const HEADER = ['Data/hora', 'Nome', 'Vai?', 'Pessoas', 'WhatsApp', 'Recado'];
+const HEADER = ['Data/hora', 'Nome', 'Vai?', 'Pessoas', 'Acompanhantes', 'WhatsApp', 'Recado'];
 
 function doPost(e) {
   const lock = LockService.getScriptLock();
@@ -18,6 +18,7 @@ function doPost(e) {
       clean_(p.nome, 120),
       vai ? 'Sim' : 'Não',
       pessoas,
+      vai ? clean_(p.acompanhantes, 1000) : '',
       clean_(p.whatsapp, 30),
       clean_(p.recado, 600),
     ]);

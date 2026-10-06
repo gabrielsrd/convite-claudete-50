@@ -240,7 +240,7 @@
   .rsvp .hint { color: var(--ink-soft); margin-bottom: 1.4rem; }
   form { display: flex; flex-direction: column; gap: 1.15rem; }
   .field { display: flex; flex-direction: column; gap: 0.4rem; }
-  .field > label, fieldset legend {
+  .field > label, fieldset legend, .field-title {
     font-weight: 700;
     font-size: 0.92rem;
   }
@@ -275,6 +275,9 @@
   @keyframes pop { 50% { transform: scale(1.05); } }
   .reveal-field { animation: rise .45s ease-out; }
   .done:not([hidden]) h2, .done:not([hidden]) p { animation: rise .7s ease-out .5s backwards; }
+  .companions { display: flex; flex-direction: column; gap: 0.55rem; }
+  .companion { display: grid; grid-template-columns: 4.6rem 1fr; align-items: center; gap: 0.6rem; }
+  .companion label { font-size: 0.85rem; font-weight: 600; color: var(--ink-soft); }
   .error { color: var(--error); font-weight: 600; font-size: 0.92rem; }
 
   .done { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 0.6rem; }
@@ -349,14 +352,6 @@
           </div>
         </div>
       </div>
-
-      <div class="fact">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M8 3 4 6l2 4 2-1v12h8V9l2 1 2-4-4-3c-.5 1.7-2 3-4 3S8.5 4.7 8 3z"/></svg>
-        <div>
-          <h2>Traje</h2>
-          <p class="big">Esporte fino / casual</p>
-        </div>
-      </div>
     </div>
   </section>
 
@@ -392,6 +387,11 @@
             <option value="7">7 pessoas</option>
             <option value="8">8 pessoas</option>
           </select>
+        </div>
+
+        <div class="field" id="acomp-field" hidden>
+          <p class="field-title"><strong>Quem vem com você?</strong></p>
+          <div class="companions" id="companions"></div>
         </div>
 
         <div class="field">
@@ -623,7 +623,7 @@
     text: "Aniversário de 50 anos da Claudete 🌻",
     dates: "20261107T210000Z/20261108T030000Z",
     location: "Chácara Recanto de Bem com a Vida, " + ADDRESS,
-    details: "Entrada a partir das 18h. Traje: esporte fino / casual.",
+    details: "Entrada a partir das 18h.",
   });
   document.getElementById("cal-link").href = "https://calendar.google.com/calendar/render?" + cal.toString();
 
@@ -661,6 +661,35 @@
   /* ---------- Confirmação ---------- */
   const form = document.getElementById("rsvp-form");
   const pessoasField = document.getElementById("pessoas-field");
+  const pessoasSelect = document.getElementById("pessoas");
+  const acompField = document.getElementById("acomp-field");
+  const companions = document.getElementById("companions");
+
+  // Um campo de nome para cada acompanhante; o que já foi digitado é mantido.
+  function renderCompanions() {
+    const vai = form.querySelector("input[name=presenca]:checked")?.value === "sim";
+    const extra = vai ? Number(pessoasSelect.value) - 1 : 0;
+    const typed = [...companions.querySelectorAll("input")].map(i => i.value);
+    companions.replaceChildren();
+    for (let i = 0; i < extra; i++) {
+      const row = document.createElement("div");
+      row.className = "companion";
+      const label = document.createElement("label");
+      label.htmlFor = `acomp-${i + 1}`;
+      label.textContent = `Pessoa ${i + 2}`;
+      const input = document.createElement("input");
+      Object.assign(input, { type: "text", id: `acomp-${i + 1}`, name: "acomp", maxLength: 120, placeholder: "Nome e sobrenome", autocomplete: "off" });
+      input.value = typed[i] || "";
+      row.append(label, input);
+      companions.append(row);
+    }
+    if (extra > 0 && acompField.hidden) {
+      acompField.classList.remove("reveal-field");
+      void acompField.offsetWidth;
+      acompField.classList.add("reveal-field");
+    }
+    acompField.hidden = extra === 0;
+  }
   const errorBox = document.getElementById("form-error");
   const sendBtn = document.getElementById("enviar");
   const formWrap = document.getElementById("rsvp-form-wrap");
@@ -676,15 +705,17 @@
       }
       pessoasField.hidden = !show;
     }
+    if (e.target.name === "presenca" || e.target === pessoasSelect) renderCompanions();
   });
 
   function showError(msg) { errorBox.textContent = msg; errorBox.hidden = false; }
 
-  function showDone(nome, vai, celebrate) {
+  function showDone(nome, vai, celebrate, total = 1) {
     const first = nome.trim().split(/\s+/)[0];
     document.getElementById("done-title").textContent = vai ? `Oba, ${first}!` : `Obrigada por avisar, ${first}`;
+    const quem = total > 1 ? `Presença confirmada para ${total} pessoas.` : "Sua presença está confirmada.";
     document.getElementById("done-text").textContent = vai
-      ? "Sua presença está confirmada. Te espero no dia 7 de novembro, a partir das 18h!"
+      ? `${quem} Te espero no dia 7 de novembro, a partir das 18h!`
       : "Vou sentir sua falta. Obrigada pelo carinho de responder!";
     formWrap.hidden = true;
     done.hidden = false;
@@ -708,12 +739,18 @@
     const presenca = data.get("presenca");
     if (nome.length < 2) { showError("Escreva seu nome para a gente saber quem confirmou."); document.getElementById("nome").focus(); return; }
     if (!presenca) { showError("Conte pra gente se você vai ou não."); return; }
+    const acompInputs = presenca === "sim" ? [...companions.querySelectorAll("input")] : [];
+    const semNome = acompInputs.find(i => i.value.trim().length < 2);
+    if (semNome) { showError("Escreva o nome de cada pessoa que vem com você."); semNome.focus(); return; }
+    const acompanhantes = acompInputs.map(i => i.value.trim());
+    const total = presenca === "sim" ? acompanhantes.length + 1 : 0;
     if (!RSVP_ENDPOINT) { showError("As confirmações ainda não estão ligadas. Tente de novo mais tarde."); return; }
 
     const body = new URLSearchParams({
       nome,
       presenca,
-      pessoas: presenca === "sim" ? data.get("pessoas") : "0",
+      pessoas: String(total),
+      acompanhantes: acompanhantes.join(", "),
       whatsapp: (data.get("whatsapp") || "").toString().trim(),
       recado: (data.get("recado") || "").toString().trim(),
     });
@@ -723,8 +760,8 @@
     try {
       // O Apps Script não devolve cabeçalhos CORS; com no-cors o envio chega, só não lemos a resposta.
       await fetch(RSVP_ENDPOINT, { method: "POST", mode: "no-cors", body });
-      try { localStorage.setItem("rsvp-claudete50", JSON.stringify({ nome, presenca })); } catch (_) {}
-      showDone(nome, presenca === "sim", true);
+      try { localStorage.setItem("rsvp-claudete50", JSON.stringify({ nome, presenca, total })); } catch (_) {}
+      showDone(nome, presenca === "sim", true, total);
     } catch (_) {
       showError("Não conseguimos enviar. Confira sua internet e tente de novo.");
     } finally {
@@ -736,6 +773,7 @@
   document.getElementById("again").addEventListener("click", () => {
     form.reset();
     pessoasField.hidden = true;
+    renderCompanions();
     done.hidden = true;
     formWrap.hidden = false;
     try { localStorage.removeItem("rsvp-claudete50"); } catch (_) {}
@@ -744,7 +782,7 @@
   // Quem já confirmou neste aparelho vê o agradecimento ao voltar.
   try {
     const saved = JSON.parse(localStorage.getItem("rsvp-claudete50") || "null");
-    if (saved && saved.nome) showDone(saved.nome, saved.presenca === "sim");
+    if (saved && saved.nome) showDone(saved.nome, saved.presenca === "sim", false, saved.total || 1);
   } catch (_) {}
 </script>
 </body>
