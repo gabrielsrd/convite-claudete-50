@@ -1,0 +1,550 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Claudete 50 anos</title>
+<meta name="description" content="Sábado, 7 de novembro, a partir das 18h, na Chácara Recanto de Bem com a Vida. Confirme sua presença!">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Claudete 50 anos 🌻">
+<meta property="og:description" content="Sábado, 7 de novembro, a partir das 18h. Confirme sua presença!">
+<meta property="og:image" content="https://gabrielsrd.github.io/convite-claudete-50/preview.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="theme-color" content="#17301f">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🌻%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..600&family=Mulish:wght@400;600;700&family=Parisienne&display=swap">
+<style>
+  /* Layout: uma coluna estreita sobre um campo verde-folha; o girassol abre o convite,
+     os detalhes vêm num cartão de papel e a confirmação fecha a página. */
+  :root {
+    --field: #17301f;
+    --field-2: #20412b;
+    --leaf: #3f6b3a;
+    --petal: #f6b80f;
+    --petal-deep: #d4890a;
+    --seed: #3a2210;
+    --paper: #fdf6e3;
+    --ink: #2b1d0e;
+    --ink-soft: #6b5a43;
+    --on-field: #f7efd6;
+    --on-field-soft: #c6d3b4;
+    --error: #a3271b;
+
+    --font-display: "Bodoni Moda", "Didot", "Bodoni 72", Georgia, serif;
+    --font-script: "Parisienne", "Snell Roundhand", cursive;
+    --font-body: "Mulish", "Segoe UI", system-ui, sans-serif;
+
+    color-scheme: dark;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  [hidden] { display: none !important; }
+  body {
+    margin: 0;
+    background: var(--field);
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% 0%, var(--field-2), transparent 70%),
+      radial-gradient(ellipse 60% 40% at 50% 100%, var(--field-2), transparent 70%);
+    color: var(--on-field);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.55;
+    padding-inline: 16px;
+    padding-block: env(safe-area-inset-top, 0px) env(safe-area-inset-bottom, 0px);
+  }
+  main {
+    max-width: 34rem;
+    margin-inline: auto;
+    padding-block: 2rem 3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2.25rem;
+  }
+  h1, h2 { text-wrap: balance; margin: 0; font-weight: 500; }
+  p { margin: 0; }
+
+  /* ---------- Capa ---------- */
+  .hero { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 0.75rem; }
+  .eyebrow {
+    font-size: 0.78rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--on-field-soft);
+    font-weight: 600;
+  }
+  .flower-wrap { position: relative; width: min(21rem, 86vw); aspect-ratio: 1; max-width: 100%; }
+  .flower-wrap svg { width: 100%; height: 100%; display: block; overflow: visible; }
+  .petals { transform-origin: 0 0; animation: turn 140s linear infinite; }
+  @keyframes turn { to { transform: rotate(360deg); } }
+  .fifty {
+    position: absolute; inset: 0;
+    display: grid; place-items: center;
+    font-family: var(--font-display);
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-size: clamp(3.4rem, 15vw, 4.6rem);
+    line-height: 1;
+    color: var(--petal);
+    letter-spacing: -0.02em;
+    pointer-events: none;
+  }
+  .name {
+    font-family: var(--font-script);
+    font-weight: 400;
+    font-size: clamp(3.6rem, 17vw, 5.2rem);
+    line-height: 1;
+    color: var(--on-field);
+    margin-top: 0.25rem;
+  }
+  .lede {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 1.2rem;
+    color: var(--on-field-soft);
+    max-width: 26rem;
+  }
+
+  /* ---------- Cartão de detalhes ---------- */
+  .card {
+    background: var(--paper);
+    color: var(--ink);
+    border-radius: 6px;
+    padding: 1.75rem 1.5rem;
+    box-shadow: 0 18px 40px -18px rgba(0,0,0,.55);
+  }
+  .date {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 0.9rem;
+    text-align: center;
+    padding-bottom: 1.4rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--ink) 15%, transparent);
+  }
+  .date .side {
+    font-size: 0.8rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--ink-soft);
+    padding-block: 0.4rem;
+    border-block: 1px solid color-mix(in srgb, var(--ink) 25%, transparent);
+  }
+  .date .day {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 4rem;
+    line-height: 0.9;
+    font-variant-numeric: lining-nums;
+  }
+  .date .month {
+    display: block;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-top: 0.35rem;
+    color: var(--petal-deep);
+  }
+  .facts { display: flex; flex-direction: column; gap: 1.3rem; padding-top: 1.4rem; }
+  .fact { display: grid; grid-template-columns: 2rem 1fr; gap: 0.8rem; align-items: start; }
+  .fact svg { width: 1.6rem; height: 1.6rem; color: var(--petal-deep); margin-top: 0.1rem; }
+  .fact h2 {
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--ink-soft);
+    margin-bottom: 0.15rem;
+  }
+  .fact .big { font-family: var(--font-display); font-size: 1.3rem; line-height: 1.3; }
+  .fact .small { color: var(--ink-soft); font-size: 0.95rem; }
+  .actions { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.75rem; }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.45rem;
+    font: 700 0.92rem/1 var(--font-body);
+    padding: 0.8rem 1.1rem;
+    border-radius: 999px;
+    border: 1.5px solid var(--ink);
+    color: var(--ink);
+    background: transparent;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background .15s, color .15s, transform .15s;
+  }
+  .btn:hover { background: var(--ink); color: var(--paper); }
+  .btn:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible, .choice input:focus-visible + span {
+    outline: 3px solid var(--petal-deep);
+    outline-offset: 2px;
+  }
+  .btn-primary { background: var(--petal); border-color: var(--petal); color: var(--ink); width: 100%; padding-block: 1.05rem; font-size: 1rem; }
+  .btn-primary:hover { background: var(--petal-deep); border-color: var(--petal-deep); color: var(--ink); }
+  .btn-primary:disabled { opacity: .6; cursor: progress; }
+
+  .countdown {
+    text-align: center;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 1.15rem;
+    color: var(--on-field-soft);
+  }
+  .countdown strong { font-style: normal; color: var(--petal); font-weight: 600; font-size: 1.6rem; font-variant-numeric: lining-nums; }
+
+  /* ---------- Confirmação ---------- */
+  .rsvp h2 {
+    font-family: var(--font-display);
+    font-size: 1.9rem;
+    line-height: 1.15;
+    margin-bottom: 0.35rem;
+  }
+  .rsvp .hint { color: var(--ink-soft); margin-bottom: 1.4rem; }
+  form { display: flex; flex-direction: column; gap: 1.15rem; }
+  .field { display: flex; flex-direction: column; gap: 0.4rem; }
+  .field > label, fieldset legend {
+    font-weight: 700;
+    font-size: 0.92rem;
+  }
+  .opt { font-weight: 400; color: var(--ink-soft); }
+  input[type=text], input[type=tel], select, textarea {
+    font: 400 1rem/1.4 var(--font-body);
+    color: var(--ink);
+    background: #fffdf6;
+    border: 1.5px solid color-mix(in srgb, var(--ink) 25%, transparent);
+    border-radius: 6px;
+    padding: 0.75rem 0.85rem;
+    width: 100%;
+    color-scheme: light;
+  }
+  textarea { min-height: 5.5rem; resize: vertical; }
+  legend { padding: 0; }
+  fieldset { border: 0; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.5rem; }
+  .choices { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+  .choice { position: relative; }
+  .choice input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+  .choice span {
+    display: flex; align-items: center; justify-content: center; text-align: center;
+    min-height: 3.2rem;
+    padding: 0.6rem;
+    border: 1.5px solid color-mix(in srgb, var(--ink) 25%, transparent);
+    border-radius: 6px;
+    font-weight: 600;
+    background: #fffdf6;
+    transition: background .15s, border-color .15s;
+  }
+  .choice input:checked + span { background: var(--petal); border-color: var(--petal-deep); }
+  .error { color: var(--error); font-weight: 600; font-size: 0.92rem; }
+
+  .done { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 0.6rem; }
+  .done svg { width: 5rem; height: 5rem; }
+  .done h2 { font-family: var(--font-display); font-size: 1.8rem; }
+  .done p { color: var(--ink-soft); }
+  .linkish {
+    background: none; border: 0; padding: 0; margin-top: 0.4rem;
+    font: 600 0.92rem var(--font-body); color: var(--ink-soft);
+    text-decoration: underline; cursor: pointer;
+  }
+
+  footer {
+    text-align: center;
+    color: var(--on-field-soft);
+    display: flex; flex-direction: column; gap: 0.2rem; align-items: center;
+  }
+  footer .sig { font-family: var(--font-script); font-size: 2.4rem; color: var(--on-field); line-height: 1.1; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .petals { animation: none; }
+    .btn, .choice span { transition: none; }
+  }
+</style>
+</head>
+<body>
+<main>
+
+  <header class="hero">
+    <p class="eyebrow">Venha celebrar comigo</p>
+    <div class="flower-wrap">
+      <svg id="hero-flower" viewBox="0 0 200 200" role="img" aria-label="Girassol"></svg>
+      <div class="fifty" aria-hidden="true">50</div>
+    </div>
+    <h1 class="name">Claudete</h1>
+    <p class="lede">São 50 anos de muitas primaveras, e quero comemorar com quem faz parte delas.</p>
+  </header>
+
+  <section class="card" aria-label="Detalhes da festa">
+    <div class="date">
+      <span class="side">Sábado</span>
+      <div class="day">07<span class="month">Novembro</span></div>
+      <span class="side">18h</span>
+    </div>
+
+    <div class="facts">
+      <div class="fact">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        <div>
+          <h2>Quando</h2>
+          <p class="big">Sábado, 7 de novembro de 2026</p>
+          <p class="small">Entrada a partir das 18h</p>
+          <div class="actions">
+            <a class="btn" id="cal-link" href="#" target="_blank" rel="noopener">Salvar na agenda</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="fact">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 21s-7-6.1-7-11.5a7 7 0 0 1 14 0C19 14.9 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>
+        <div>
+          <h2>Onde</h2>
+          <p class="big">Chácara Recanto de Bem com a Vida</p>
+          <p class="small">Estrada Votorantim, 218 · Águas Espraiadas<br>Embu das Artes, SP · CEP 06844-310</p>
+          <div class="actions">
+            <a class="btn" id="maps-link" href="#" target="_blank" rel="noopener">Abrir no Google Maps</a>
+            <a class="btn" id="waze-link" href="#" target="_blank" rel="noopener">Abrir no Waze</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="fact">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M8 3 4 6l2 4 2-1v12h8V9l2 1 2-4-4-3c-.5 1.7-2 3-4 3S8.5 4.7 8 3z"/></svg>
+        <div>
+          <h2>Traje</h2>
+          <p class="big">Esporte fino / casual</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <p class="countdown" id="countdown" hidden></p>
+
+  <section class="card rsvp" id="confirmar" aria-labelledby="rsvp-title">
+    <div id="rsvp-form-wrap">
+      <h2 id="rsvp-title">Confirme sua presença</h2>
+      <p class="hint">Assim a gente prepara tudo com carinho para você.</p>
+      <form id="rsvp-form" novalidate>
+        <div class="field">
+          <label for="nome">Seu nome</label>
+          <input type="text" id="nome" name="nome" autocomplete="name" required maxlength="120" placeholder="Nome e sobrenome">
+        </div>
+
+        <fieldset>
+          <legend>Você vai?</legend>
+          <div class="choices">
+            <label class="choice"><input type="radio" id="presenca-sim" name="presenca" value="sim" required><span>Sim, estarei lá!</span></label>
+            <label class="choice"><input type="radio" id="presenca-nao" name="presenca" value="nao"><span>Não vou poder ir</span></label>
+          </div>
+        </fieldset>
+
+        <div class="field" id="pessoas-field" hidden>
+          <label for="pessoas">Quantas pessoas, contando com você?</label>
+          <select id="pessoas" name="pessoas">
+            <option value="1">Só eu</option>
+            <option value="2">2 pessoas</option>
+            <option value="3">3 pessoas</option>
+            <option value="4">4 pessoas</option>
+            <option value="5">5 pessoas</option>
+            <option value="6">6 pessoas</option>
+            <option value="7">7 pessoas</option>
+            <option value="8">8 pessoas</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="whatsapp">WhatsApp <span class="opt">(opcional)</span></label>
+          <input type="tel" id="whatsapp" name="whatsapp" autocomplete="tel" inputmode="tel" maxlength="30" placeholder="(11) 90000-0000">
+        </div>
+
+        <div class="field">
+          <label for="recado">Recado para a Claudete <span class="opt">(opcional)</span></label>
+          <textarea id="recado" name="recado" maxlength="600" placeholder="Deixe um carinho para a aniversariante"></textarea>
+        </div>
+
+        <p class="error" id="form-error" role="alert" hidden></p>
+        <button class="btn btn-primary" type="submit" id="enviar">Enviar confirmação</button>
+      </form>
+    </div>
+
+    <div class="done" id="rsvp-done" hidden>
+      <svg id="done-flower" viewBox="0 0 200 200" aria-hidden="true"></svg>
+      <h2 id="done-title">Obrigada!</h2>
+      <p id="done-text"></p>
+      <button class="linkish" type="button" id="again">Enviar outra confirmação</button>
+    </div>
+  </section>
+
+  <footer>
+    <p>Com carinho,</p>
+    <p class="sig">Claudete</p>
+  </footer>
+
+</main>
+
+<script>
+  /* Endereço do Apps Script que grava as confirmações na planilha (veja LEIA-ME.md). */
+  const RSVP_ENDPOINT = "";
+
+  const PARTY_START = new Date("2026-11-07T18:00:00-03:00");
+  const ADDRESS = "Estrada Votorantim, 218 - Águas Espraiadas, Embu das Artes - SP, 06844-310";
+
+  /* ---------- Girassol: pétalas em duas camadas e sementes em espiral de ângulo áureo ---------- */
+  const NS = "http://www.w3.org/2000/svg";
+  const GOLDEN_ANGLE = Math.PI * (3 - Math.sqrt(5)); // ~137,5°
+
+  function el(name, attrs, parent) {
+    const node = document.createElementNS(NS, name);
+    for (const k in attrs) node.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(node);
+    return node;
+  }
+
+  function petalPath(base, tip, width) {
+    const mid = base + (tip - base) * 0.35;
+    return `M0 ${-base} C ${width} ${-mid}, ${width * 0.55} ${-tip + 6}, 0 ${-tip} ` +
+           `C ${-width * 0.55} ${-tip + 6}, ${-width} ${-mid}, 0 ${-base} Z`;
+  }
+
+  function drawSunflower(svg, { centerR = 38, seeds = 260, hollow = 0.62 } = {}) {
+    const petals = el("g", { class: "petals" }, el("g", { transform: "translate(100 100)" }, svg));
+    const g = el("g", { transform: "translate(100 100)" }, svg);
+
+    // 34 e 21: números de Fibonacci, como nos girassóis de verdade
+    const layers = [
+      { n: 34, base: centerR - 6, tip: 98, w: 9, fill: "var(--petal-deep)", off: 0 },
+      { n: 21, base: centerR - 6, tip: 92, w: 11, fill: "var(--petal)", off: Math.PI / 21 },
+    ];
+    for (const L of layers) {
+      for (let i = 0; i < L.n; i++) {
+        const a = (i / L.n) * 360 + (L.off * 180) / Math.PI + (i % 2 ? 2 : -2);
+        const tip = L.tip - (i % 3) * 3;
+        el("path", {
+          d: petalPath(L.base, tip, L.w),
+          fill: L.fill,
+          transform: `rotate(${a.toFixed(2)})`,
+        }, petals);
+      }
+    }
+
+    el("circle", { r: centerR + 1.5, fill: "#5a3714" }, g);
+    el("circle", { r: centerR, fill: "var(--seed)" }, g);
+    const k = centerR / Math.sqrt(seeds) * 0.96;
+    for (let i = 0; i < seeds; i++) {
+      const r = k * Math.sqrt(i + 0.5);
+      if (r < centerR * hollow) continue;
+      const t = i * GOLDEN_ANGLE;
+      const outer = r / centerR;
+      el("circle", {
+        cx: (r * Math.cos(t)).toFixed(2),
+        cy: (r * Math.sin(t)).toFixed(2),
+        r: (0.9 + outer * 0.9).toFixed(2),
+        fill: outer > 0.85 ? "#8a5a1c" : (i % 2 ? "#6b4316" : "#4f3010"),
+      }, g);
+    }
+  }
+
+  drawSunflower(document.getElementById("hero-flower"));
+  drawSunflower(document.getElementById("done-flower"), { hollow: 0 });
+
+  /* ---------- Links ---------- */
+  const q = encodeURIComponent(ADDRESS);
+  document.getElementById("maps-link").href = `https://www.google.com/maps/search/?api=1&query=${q}`;
+  document.getElementById("waze-link").href = `https://waze.com/ul?q=${q}&navigate=yes`;
+  const cal = new URLSearchParams({
+    action: "TEMPLATE",
+    text: "Aniversário de 50 anos da Claudete 🌻",
+    dates: "20261107T210000Z/20261108T030000Z",
+    location: "Chácara Recanto de Bem com a Vida, " + ADDRESS,
+    details: "Entrada a partir das 18h. Traje: esporte fino / casual.",
+  });
+  document.getElementById("cal-link").href = "https://calendar.google.com/calendar/render?" + cal.toString();
+
+  /* ---------- Contagem regressiva ---------- */
+  (function countdown() {
+    const out = document.getElementById("countdown");
+    const today = new Date();
+    const dayMs = 86400000;
+    const startOfDay = d => Date.UTC(d.getFullYear(), d.getMonth(), d.getDate());
+    const days = Math.round((startOfDay(PARTY_START) - startOfDay(today)) / dayMs);
+    if (days > 1) out.innerHTML = `Faltam <strong>${days}</strong> dias`;
+    else if (days === 1) out.innerHTML = `É <strong>amanhã</strong>!`;
+    else if (days === 0) out.innerHTML = `É <strong>hoje</strong>! Te espero a partir das 18h.`;
+    else return;
+    out.hidden = false;
+  })();
+
+  /* ---------- Confirmação ---------- */
+  const form = document.getElementById("rsvp-form");
+  const pessoasField = document.getElementById("pessoas-field");
+  const errorBox = document.getElementById("form-error");
+  const sendBtn = document.getElementById("enviar");
+  const formWrap = document.getElementById("rsvp-form-wrap");
+  const done = document.getElementById("rsvp-done");
+
+  form.addEventListener("change", e => {
+    if (e.target.name === "presenca") pessoasField.hidden = e.target.value !== "sim";
+  });
+
+  function showError(msg) { errorBox.textContent = msg; errorBox.hidden = false; }
+
+  function showDone(nome, vai) {
+    const first = nome.trim().split(/\s+/)[0];
+    document.getElementById("done-title").textContent = vai ? `Oba, ${first}!` : `Obrigada por avisar, ${first}`;
+    document.getElementById("done-text").textContent = vai
+      ? "Sua presença está confirmada. Te espero no dia 7 de novembro, a partir das 18h!"
+      : "Vou sentir sua falta. Obrigada pelo carinho de responder!";
+    formWrap.hidden = true;
+    done.hidden = false;
+  }
+
+  form.addEventListener("submit", async e => {
+    e.preventDefault();
+    errorBox.hidden = true;
+    const data = new FormData(form);
+    const nome = (data.get("nome") || "").toString().trim();
+    const presenca = data.get("presenca");
+    if (nome.length < 2) { showError("Escreva seu nome para a gente saber quem confirmou."); document.getElementById("nome").focus(); return; }
+    if (!presenca) { showError("Conte pra gente se você vai ou não."); return; }
+    if (!RSVP_ENDPOINT) { showError("As confirmações ainda não estão ligadas. Tente de novo mais tarde."); return; }
+
+    const body = new URLSearchParams({
+      nome,
+      presenca,
+      pessoas: presenca === "sim" ? data.get("pessoas") : "0",
+      whatsapp: (data.get("whatsapp") || "").toString().trim(),
+      recado: (data.get("recado") || "").toString().trim(),
+    });
+
+    sendBtn.disabled = true;
+    sendBtn.textContent = "Enviando…";
+    try {
+      // O Apps Script não devolve cabeçalhos CORS; com no-cors o envio chega, só não lemos a resposta.
+      await fetch(RSVP_ENDPOINT, { method: "POST", mode: "no-cors", body });
+      try { localStorage.setItem("rsvp-claudete50", JSON.stringify({ nome, presenca })); } catch (_) {}
+      showDone(nome, presenca === "sim");
+    } catch (_) {
+      showError("Não conseguimos enviar. Confira sua internet e tente de novo.");
+    } finally {
+      sendBtn.disabled = false;
+      sendBtn.textContent = "Enviar confirmação";
+    }
+  });
+
+  document.getElementById("again").addEventListener("click", () => {
+    form.reset();
+    pessoasField.hidden = true;
+    done.hidden = true;
+    formWrap.hidden = false;
+    try { localStorage.removeItem("rsvp-claudete50"); } catch (_) {}
+  });
+
+  // Quem já confirmou neste aparelho vê o agradecimento ao voltar.
+  try {
+    const saved = JSON.parse(localStorage.getItem("rsvp-claudete50") || "null");
+    if (saved && saved.nome) showDone(saved.nome, saved.presenca === "sim");
+  } catch (_) {}
+</script>
+</body>
+</html>
