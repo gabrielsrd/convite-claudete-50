@@ -12,7 +12,7 @@ function doPost(e) {
     const sheet = getSheet_();
     const p = (e && e.parameter) || {};
     const vai = p.presenca === 'sim';
-    const pessoas = vai ? Math.min(Math.max(parseInt(p.pessoas, 10) || 1, 1), 20) : 0;
+    const pessoas = vai ? Math.min(Math.max(parseInt(p.pessoas, 10) || 1, 1), 5) : 0;
     sheet.appendRow([
       new Date(),
       clean_(p.nome, 120),
